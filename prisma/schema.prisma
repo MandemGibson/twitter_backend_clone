@@ -25,6 +25,27 @@ model User {
   bio        String?
   isVerified Boolean @default(false)
   tweets     Tweet[]
+  tokens     Token[]
+}
+
+model Token {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type       TokenType
+  emailToken String?   @unique
+
+  valid     Boolean  @default(true)
+  expiresIn DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum TokenType {
+  EMAIL
+  API
 }
 
 model Tweet {
