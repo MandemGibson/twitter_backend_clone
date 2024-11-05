@@ -1,0 +1,23 @@
+###
+GET http://localhost:3000/user
+
+###
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "email": "kb@test.com",
+    "name": "Kobina George",
+    "username": "kobbygee"
+}
+
+###
+PUT http://localhost:3000/user/cm34mxuza0000os97qp8n5brn
+Content-Type: application/json
+
+{
+    "bio": "Software Engineer"
+}
+
+###
+DELETE http://localhost:3000/user/cm34mxuza0000os97qp8n5brn
