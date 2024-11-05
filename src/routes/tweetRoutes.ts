@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
 
 //List Tweet
 router.get("/", async (req, res) => {
-  const allTweets = await prisma.tweet.findMany();
+  const allTweets = await prisma.tweet.findMany({ include: { user: true } });
   res.status(200).json(allTweets);
 });
 
@@ -31,12 +31,13 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const tweet = await prisma.tweet.findUnique({
     where: { id },
+    include: { user: true },
   });
   res.status(200).json(tweet);
 });
 
 //Update Tweet
-router.put("/:id", async(req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { content, image } = req.body;
