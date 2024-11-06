@@ -29,3 +29,11 @@ Content-Type: application/json
 {
     "email": "johnny@sins.io"
 }
+
+###
+POST http://localhost:3000/auth/authenticate
+Content-Type: application/json
+
+{
+    "emailToken": "7826656dcb42bd19b9f6b84588926be05b77afd34896b188b492b45851fdc179"
+}

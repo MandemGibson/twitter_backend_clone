@@ -50,8 +50,24 @@ router.post("/login", async (req, res) => {
 
 //validate the email token
 //generate a long-lived jwt token
-router.post("/authenticate", (req, res) => {
-  res.status(501).send("Not Implemented");
+router.post("/authenticate", async (req, res): Promise<any> => {
+  try {
+    const { email, emailToken } = req.body;
+    const hashedEmailToken = crypto
+      .createHash("sha256")
+      .update(emailToken.toString())
+      .digest("hex");
+
+    const token = await prisma.token.findUnique({
+      where: { emailToken: hashedEmailToken },
+      include: { user: true },
+    });
+
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export default router;
