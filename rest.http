@@ -21,3 +21,11 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3000/user/cm34mxuza0000os97qp8n5brn
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "johnny@sins.io"
+}
