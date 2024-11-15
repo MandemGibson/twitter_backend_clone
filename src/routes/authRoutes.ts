@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 
 //generate a random 8 digit number as email token
 const generateEmailToken = () => {
+const generateEmailToken = () => {
   return crypto.randomInt(10000000, 99999999);
 };
 
@@ -83,6 +84,40 @@ router.post("/authenticate", async (req, res): Promise<any> => {
     if (token.user?.email !== email)
       return res.status(401).json({ error: "Unauthorized" });
 
+    if (!token || !token.valid)
+      return res.status(401).json({ error: "Unauthorized" });
+
+    if (token.expiresIn < new Date())
+      return res.status(401).json({ error: "Token has expired" });
+
+    if (token.user?.email !== email)
+      return res.status(401).json({ error: "Unauthorized" });
+
+    //generate an API token
+    const expiration = new Date(new Date().getTime() + 12 * 60 * 60 * 1000);
+
+    const createdApiToken = await prisma.token.create({
+      data: {
+        type: "API",
+        expiresIn: expiration,
+        user: {
+          connect: { email },
+        },
+      },
+    });
+
+    //invalidate email token
+    await prisma.token.update({
+      where: { id: token.id },
+      data: {
+        valid: false,
+      },
+    });
+
+    //generate jwt token
+    const authToken = generateAuthToken(createdApiToken.id);
+
+    res.status(200).json({ authToken });
     if (!token || !token.valid)
       return res.status(401).json({ error: "Unauthorized" });
 
