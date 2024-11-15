@@ -83,6 +83,15 @@ router.post("/authenticate", async (req, res): Promise<any> => {
     if (token.user?.email !== email)
       return res.status(401).json({ error: "Unauthorized" });
 
+    if (!token || !token.valid)
+      return res.status(401).json({ error: "Unauthorized" });
+
+    if (token.expiresIn < new Date())
+      return res.status(401).json({ error: "Token has expired" });
+
+    if (token.user?.email !== email)
+      return res.status(401).json({ error: "Unauthorized" });
+
     //generate an API token
     const expiration = new Date(new Date().getTime() + 12 * 60 * 60 * 1000);
 
